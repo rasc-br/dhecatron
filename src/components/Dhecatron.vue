@@ -1,13 +1,20 @@
 <template>
   <v-container class="dhecatron-view">
     <div class="plane main">
-      <div class="circle"></div>
+      <div id="partOne" class="circle"></div>
       <div class="circle"></div>
       <div class="circle"></div>
       <div class="circle"></div>
       <div class="circle"></div>
       <div class="circle"></div>
     </div>
+    <v-text-field
+      id="askQuestion"
+      label="Ask your question"
+      solo
+      class="question-class"
+      v-model="question">
+    </v-text-field>
   </v-container>
 </template>
 
@@ -18,6 +25,7 @@ export default Vue.extend({
   name: 'Dhecatron',
 
   data: () => ({
+    question: '',
   }),
   methods: {
   },
@@ -33,7 +41,12 @@ html, body {
   width: 100%;
   height: 100%;
 }
-
+.question-class {
+    top: 70%;
+    left: 10%;
+    position: absolute;
+    min-width: 80%;
+}
 .dhecatron-view {
   position: absolute;
   top: - 50%;
@@ -43,7 +56,6 @@ html, body {
   -webkit-perspective: 400;
           perspective: 400;
 }
-
 .plane {
   width: 120px;
   height: 120px;
@@ -70,8 +82,8 @@ html, body {
           transform-style: preserve-3d;
   border-radius: 100%;
   box-sizing: border-box;
-  box-shadow: 0 0 60px crimson, inset 0 0 60px crimson;
-  z-index: 999;
+  box-shadow: 0 0 60px MediumBlue  , inset 0 0 60px MediumBlue  ;
+  transition: all .2s ease-in;
 }
 .plane.main .circle::before, .plane.main .circle::after {
   content: "";
@@ -85,9 +97,9 @@ html, body {
   width: 10%;
   height: 10%;
   border-radius: 100%;
-  background: crimson;
+  background: MediumBlue  ;
   box-sizing: border-box;
-  box-shadow: 0 0 60px 2px crimson;
+  box-shadow: 0 0 60px 2px MediumBlue  ;
 }
 .plane.main .circle::before {
   -webkit-transform: translateZ(-90px);
@@ -116,6 +128,10 @@ html, body {
 .plane.main .circle:nth-child(5) {
   -webkit-transform: rotateZ(360deg) rotateX(63.435deg);
           transform: rotateZ(360deg) rotateX(63.435deg);
+}
+
+#askQuestion:focus ~ #testee {
+    background: red;
 }
 
 @-webkit-keyframes rotate {

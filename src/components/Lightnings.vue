@@ -41,7 +41,7 @@ export default Vue.extend({
     },
   },
   mounted() {
-    setInterval(() => this.randomStrike(), 5000);
+    setInterval(() => this.randomStrike(), 3000);
   },
 });
 </script>
