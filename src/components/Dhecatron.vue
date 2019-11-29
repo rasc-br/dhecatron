@@ -1,18 +1,20 @@
 <template>
   <v-container class="dhecatron-view">
     <div class="plane main">
-      <div id="partOne" class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
+      <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
+      <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
+      <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
+      <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
+      <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
+      <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
     </div>
     <v-text-field
       id="askQuestion"
       label="Ask your question"
       solo
       class="question-class"
+      @focus="angryDhecatron=true"
+      @blur="angryDhecatron=false"
       v-model="question">
     </v-text-field>
   </v-container>
@@ -26,6 +28,7 @@ export default Vue.extend({
 
   data: () => ({
     question: '',
+    angryDhecatron: false,
   }),
   methods: {
   },
@@ -83,7 +86,10 @@ html, body {
   border-radius: 100%;
   box-sizing: border-box;
   box-shadow: 0 0 60px MediumBlue  , inset 0 0 60px MediumBlue  ;
-  transition: all .2s ease-in;
+  transition: all .5s ease-in;
+}
+.plane.main .red-circle {
+    box-shadow: 0 0 60px crimson  , inset 0 0 60px crimson  ;
 }
 .plane.main .circle::before, .plane.main .circle::after {
   content: "";
@@ -97,9 +103,13 @@ html, body {
   width: 10%;
   height: 10%;
   border-radius: 100%;
-  background: MediumBlue  ;
+  // background: MediumBlue  ;
   box-sizing: border-box;
   box-shadow: 0 0 60px 2px MediumBlue  ;
+}
+.plane.main .circle-red::before, .plane.main .circle-red::after {
+  // background: crimson;
+  box-shadow: 0 0 60px 2px crimson  ;
 }
 .plane.main .circle::before {
   -webkit-transform: translateZ(-90px);
@@ -128,10 +138,6 @@ html, body {
 .plane.main .circle:nth-child(5) {
   -webkit-transform: rotateZ(360deg) rotateX(63.435deg);
           transform: rotateZ(360deg) rotateX(63.435deg);
-}
-
-#askQuestion:focus ~ #testee {
-    background: red;
 }
 
 @-webkit-keyframes rotate {

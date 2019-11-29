@@ -52,6 +52,7 @@ body {
 }
 
 .lightning-box {
+  z-index: 0;
   background: #111111;
   min-height: 100vh;
   min-width: 100vw;
