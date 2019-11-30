@@ -1,6 +1,7 @@
 <template>
   <v-container class="dhecatron-view">
-    <div class="plane main">
+    <!-- <div class="plane main"> -->
+    <div :class="['plane main', angryDhecatron ? 'faster' : '']">
       <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
       <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
       <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
@@ -10,12 +11,13 @@
     </div>
     <v-text-field
       id="askQuestion"
+      ref="askQuestion"
       label="Ask your question"
       solo
       class="question-class"
       @focus="angryDhecatron=true"
       @blur="angryDhecatron=false"
-      v-model="question">
+      @keydown="typing">
     </v-text-field>
   </v-container>
 </template>
@@ -27,12 +29,46 @@ export default Vue.extend({
   name: 'Dhecatron',
 
   data: () => ({
-    question: '',
+    typed: '',
     angryDhecatron: false,
+    actualCompliment: '',
+    secret: false,
+    dhecatronAnswer: '',
+    fakeAnswerCounter: 0,
   }),
+  computed: {
+    compliments() {
+      return this.$store.getters.compliments;
+    },
+    badAnswers() {
+      return this.$store.getters.badAnswers;
+    },
+  },
   methods: {
+    randomNumber(min:number, max:number) {
+      return Math.floor(Math.random() * max) + min;
+    },
+    typing(event:any) {
+      if (event.code === 'ControlLeft') {
+        this.secret = !this.secret;
+      }
+      if (this.secret && event.code !== 'ControlLeft') {
+        this.dhecatronAnswer += event.key;
+        const letter = this.actualCompliment[this.fakeAnswerCounter];
+        if ((this.$refs.askQuestion as any).internalValue === undefined) {
+          (this.$refs.askQuestion as any).internalValue = '';
+        }
+        (this.$refs.askQuestion as any).internalValue += letter;
+        this.fakeAnswerCounter += 1;
+        event.preventDefault();
+      }
+    },
+    getComplement() {
+      this.actualCompliment = this.compliments[this.randomNumber(0, this.compliments.length)];
+    },
   },
   mounted() {
+    this.getComplement();
   },
 });
 </script>
@@ -76,6 +112,10 @@ html, body {
           transform: rotateX(60deg) rotateZ(-30deg);
   -webkit-animation: rotate 20s infinite linear;
           animation: rotate 20s infinite linear;
+}
+.plane.main.faster {
+  -webkit-animation: rotate 3s infinite linear;
+          animation: rotate 3s infinite linear;
 }
 .plane.main .circle {
   width: 120px;

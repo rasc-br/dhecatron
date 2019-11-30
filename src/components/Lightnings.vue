@@ -17,31 +17,33 @@ export default Vue.extend({
 
   data: () => ({
     randImg: 'lightning1',
-    randPosition: 0,
-    randDeg: 0,
+    interval: 0,
   }),
   methods: {
     randNumber(max: number, min: number) {
-      const number: number = Math.floor(Math.random() * max) - min;
+      const number: number = Math.floor(Math.random() * max) + min;
       return number;
     },
-    setImg() {
+    setImg(first?: boolean) {
       const lightningImages = [
+        'IamDhecatron',
         'lightning1',
         'lightning2',
         'lightning3',
         'lightning4',
       ];
-      return lightningImages[this.randNumber(4, 0)];
+      return first ? lightningImages[0] : lightningImages[this.randNumber(4, 1)];
     },
     randomStrike() {
       this.randImg = this.setImg();
-      this.randPosition = this.randNumber(80, 30);
-      this.randDeg = this.randNumber(60, 30);
     },
   },
   mounted() {
-    setInterval(() => this.randomStrike(), 3000);
+    clearInterval(this.interval);
+    setTimeout(() => {
+      this.randImg = this.setImg(true);
+      this.interval = setInterval(() => this.randomStrike(), 3000);
+    }, 3000);
   },
 });
 </script>
