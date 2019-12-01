@@ -1,6 +1,6 @@
 <template>
   <v-container class="dhecatron-view">
-    <!-- <div class="plane main"> -->
+    <div :class="[flashIt ? 'flash' : '']"></div>
     <div :class="['plane main', angryDhecatron ? 'faster' : '']">
       <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
       <div :class="['circle', angryDhecatron ? 'red-circle' : '']"></div>
@@ -15,10 +15,20 @@
       label="Ask your question"
       solo
       class="question-class"
-      @focus="angryDhecatron=true"
+      @focus="onAnswerFocus"
       @blur="angryDhecatron=false"
       @keydown="typing">
     </v-text-field>
+    <transition name="fade">
+      <v-card
+        class="mx-auto answer-class blue-grey darken-3"
+        v-if="showAnswer"
+        max-width="800">
+      <v-card-text class="headline font-weight-bold">
+        {{actualAnswer}}
+      </v-card-text>
+      </v-card>
+    </transition>
   </v-container>
 </template>
 
@@ -32,9 +42,12 @@ export default Vue.extend({
     typed: '',
     angryDhecatron: false,
     actualCompliment: '',
+    actualAnswer: '',
     secret: false,
     dhecatronAnswer: '',
     fakeAnswerCounter: 0,
+    flashIt: false,
+    showAnswer: false,
   }),
   computed: {
     compliments() {
@@ -51,9 +64,14 @@ export default Vue.extend({
     typing(event:any) {
       if (event.code === 'ControlLeft') {
         this.secret = !this.secret;
+        this.fakeAnswerCounter = 0;
       }
-      if (this.secret && event.code !== 'ControlLeft') {
+      if (this.secret && event.code !== 'ControlLeft'
+       && event.code !== 'ShiftLeft' && event.code !== 'Enter') {
         this.dhecatronAnswer += event.key;
+        if (this.fakeAnswerCounter >= this.actualCompliment.length) {
+          this.fakeAnswerCounter = 0;
+        }
         const letter = this.actualCompliment[this.fakeAnswerCounter];
         if ((this.$refs.askQuestion as any).internalValue === undefined) {
           (this.$refs.askQuestion as any).internalValue = '';
@@ -62,9 +80,36 @@ export default Vue.extend({
         this.fakeAnswerCounter += 1;
         event.preventDefault();
       }
+      if (event.code === 'Enter') {
+        if (!this.dhecatronAnswer) {
+          this.actualAnswer = this.badAnswers[this.randomNumber(0, this.badAnswers.length)];
+        } else {
+          this.actualAnswer = this.dhecatronAnswer;
+        }
+        this.secret = false;
+        this.dhecatronAnswer = '';
+        this.flashIt = true;
+        setTimeout(() => {
+          this.showAnswer = true;
+          (this.$refs.askQuestion as any).internalValue = '';
+        }, 1500);
+        setTimeout(() => {
+          this.flashIt = false;
+          event.target.blur();
+        }, 2000);
+        setTimeout(() => {
+          this.showAnswer = false;
+        }, 8000);
+      }
     },
     getComplement() {
       this.actualCompliment = this.compliments[this.randomNumber(0, this.compliments.length)];
+    },
+    onAnswerFocus() {
+      this.angryDhecatron = true;
+      this.flashIt = false;
+      this.showAnswer = false;
+      this.dhecatronAnswer = '';
     },
   },
   mounted() {
@@ -85,6 +130,7 @@ html, body {
     left: 10%;
     position: absolute;
     min-width: 80%;
+    z-index:100;
 }
 .dhecatron-view {
   position: absolute;
@@ -94,6 +140,35 @@ html, body {
   bottom: 0;
   -webkit-perspective: 400;
           perspective: 400;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+.flash {
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: #FFFFFF;
+  animation: flash 15s linear;
+  z-index:90;
+}
+.answer-class {
+    top: 75%;
+    left: 10%;
+    position: absolute;
+    min-width: 80%;
+    z-index:100;
+    z-index: 91;
+    transition: all 2.5 ease;
+    text-align: center;
+}
+.fade-leave-active {
+  transition: opacity 2.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 .plane {
   width: 120px;
@@ -199,6 +274,23 @@ html, body {
   100% {
     -webkit-transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
             transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+  }
+}
+@keyframes flash {
+  0% {
+    opacity: 0.05;
+  }
+  5% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  15% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
   }
 }
 </style>
