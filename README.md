@@ -17,7 +17,7 @@ Since it's just a test, there is no demo or instructions to install, you can use
 * [VueJs](https://vuejs.org/) - Javascript framework
 * [VueUI](https://vueui.github.io/) - To start the project
 * [Visual Studio Code](https://code.visualstudio.com/) - To code
-* [Sourcetree] (https://www.sourcetreeapp.com/) - Version control
+* [Sourcetree](https://www.sourcetreeapp.com/) - Version control
 
 ## Authors
 
