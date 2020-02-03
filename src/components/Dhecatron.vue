@@ -29,6 +29,32 @@
       </v-card-text>
       </v-card>
     </transition>
+    <v-dialog
+      v-model="dialog"
+      width="500">
+      <template v-slot:activator="{ on }">
+        <v-icon
+         id="about"
+         class="about-icon"
+         large4
+         color="blue lighten-2"
+         v-on="on">
+         mdi-crosshairs-question
+        </v-icon>
+      </template>
+       <v-card>
+        <v-card-title
+          class="headline grey lighten-2"
+          primary-title>
+            About
+          </v-card-title>
+          <v-card-text>
+            Decathron was created based in a software of unknown author, that had many names
+             (Oracle, Lucifer, Roboto, SUED, KnowAll...).
+            It was a single file DOS executable that was spread around the 90's.
+          </v-card-text>
+        </v-card>
+      </v-dialog>
   </v-container>
 </template>
 
@@ -48,6 +74,7 @@ export default Vue.extend({
     fakeAnswerCounter: 0,
     flashIt: false,
     showAnswer: false,
+    dialog: false,
   }),
   computed: {
     compliments() {
@@ -67,7 +94,8 @@ export default Vue.extend({
         this.fakeAnswerCounter = 0;
       }
       if (this.secret && event.code !== 'ControlLeft'
-       && event.code !== 'ShiftLeft' && event.code !== 'Enter') {
+       && event.code !== 'ShiftLeft' && event.code !== 'Enter'
+       && event.key !== 'Backspace') {
         this.dhecatronAnswer += event.key;
         if (this.fakeAnswerCounter >= this.actualCompliment.length) {
           this.fakeAnswerCounter = 0;
@@ -131,6 +159,13 @@ html, body {
     position: absolute;
     min-width: 80%;
     z-index:100;
+}
+.about-icon {
+  font-size: 36px;
+  z-index: 1000;
+  position: absolute;
+  top: 90%;
+  left: 90%;
 }
 .dhecatron-view {
   position: absolute;
